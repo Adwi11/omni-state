@@ -1,0 +1,22 @@
+name: Enforce Stag Branch for Main Merges
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR is from stag branch
+        run: |
+          if [ "${{ github.head_ref }}" != "stag" ]; then
+            echo "❌ Error: Pull requests to main branch can only be merged from 'stag' branch"
+            echo "Current source branch: ${{ github.head_ref }}"
+            exit 1
+          else
+            echo "✅ Pull request is from 'stag' branch - merge allowed"
+          fi
+
